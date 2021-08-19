@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.sakura.crm.mapper.ValueMapper">
+  	<select id="getAll" resultType="top.sakura.crm.pojo.Value">
+        select * from tbl_dictionary_value
+    </select>
+    <select id="getById" resultType="top.sakura.crm.pojo.Value">
+        select * from tbl_dictionary_value where id=#{id}
+    </select>
+    <insert id="save">
+        insert into tbl_dictionary_value values(
+            #{id},
+            #{value},
+            #{text},
+            #{orderNo},
+            #{typeCode}
+        )
+    </insert>
+    <update id="update">
+        update tbl_dictionary_value set value=#{value},text=#{text},orderNo=#{orderNo},typeCode=#{typeCode} where id=#{id}
+    </update>
+    <delete id="delete">
+        delete from tbl_dictionary_value where id in
+        <foreach collection="array" open="(" separator="," close=")" item="ids">
+            #{ids}
+        </foreach>
+    </delete>
+</mapper>

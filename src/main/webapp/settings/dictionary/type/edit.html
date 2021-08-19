@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link href="/static/jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="/static/jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript" src="/static/jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="/static/jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+
+		/*此函数用于----js获取location中的参数
+		* 如：location=edit.html?code=color
+		* 此函数就是获取这个code=color的color值
+		* */
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i=0;i<vars.length;i++) {
+				var pair = vars[i].split("=");
+				if(pair[0] == variable){
+					return pair[1];
+				}
+			}
+			return null;
+		}
+
+		jQuery(function ($) {
+
+			//加载需要被编辑的字典表数据，从type/index.html传过来的location=edit.html?code=xxx，需要获取这个xxx的值
+			var code = getQueryVariable("code");
+			$.ajax({
+				url: "/type/get.do",
+				data:{code:code},
+				success: function (res) {
+					$("#code").val(res.code);
+					$("#name").val(res.name);
+					$("#description").val(res.description)
+				}
+			});
+
+			//确认更改
+			$("#saveBtn").click(function () {
+				$.ajax({
+					url: "/type/update.do",
+					type: "put",
+					data: {
+						code:$("#code").val(),
+						name:$("#name").val(),
+						description:$("#description").val()
+					},
+					success:function (res) {
+						if (res.success) {
+							location = "index.html";
+						}
+						if (res.msg) {
+							alert(res.msg);
+						}
+					}
+				});
+			});
+		});
+
+	</script>
+</head>
+<body>
+
+	<div style="position:  relative; left: 30px;">
+		<h3>修改字典类型</h3>
+	  	<div style="position: relative; top: -40px; left: 70%;">
+			<button id="saveBtn" type="button" class="btn btn-primary">更新</button>
+			<button type="button" class="btn btn-default" onclick="window.history.back();">取消</button>
+		</div>
+		<hr style="position: relative; top: -40px;">
+	</div>
+	<form class="form-horizontal" role="form">
+					
+		<div class="form-group">
+			<label for="create-code" class="col-sm-2 control-label">编码<span style="font-size: 15px; color: red;">*</span></label>
+			<div class="col-sm-10" style="width: 300px;">
+				<input type="text" class="form-control" id="code" style="width: 200%;" placeholder="编码作为主键，不能是中文" readonly>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="create-name" class="col-sm-2 control-label">名称</label>
+			<div class="col-sm-10" style="width: 300px;">
+				<input type="text" class="form-control" id="name" style="width: 200%;" >
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="create-describe" class="col-sm-2 control-label">描述</label>
+			<div class="col-sm-10" style="width: 300px;">
+				<textarea class="form-control" rows="3" id="description" style="width: 200%;">描述信息</textarea>
+			</div>
+		</div>
+	</form>
+	
+	<div style="height: 200px;"></div>
+</body>
+</html>
